@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=dbadmin
+      - POSTGRES_PASSWORD=Y4h3l159
+      - POSTGRES_DB=proyecto
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "SuperSecret"
+    ports:
+      - "80:80"
+    depends_on:
+      - postgres
+
+  srvproveedor:
+    container_name: srvproveedor
+    build: ./srvProveedor
+    ports:
+      - 8082:8082
+    environment:
+      - DATABASE_USERNAME=dbadmin
+      - DATABASE_PASSWORD=Y4h3l159
+      - DATABASE_URL=jdbc:postgresql://postgres:5432/proyecto
+    depends_on:
+      - postgres
+
+  srvcategoria:
+    container_name: srvcategoria
+    build: ./srvCategoria
+    ports:
+      - 8081:8081
+    environment:
+      - DATABASE_USERNAME=dbadmin
+      - DATABASE_PASSWORD=Y4h3l159
+      - DATABASE_URL=jdbc:postgresql://postgres:5432/proyecto
+    depends_on:
+      - postgres
